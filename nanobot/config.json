@@ -6,5 +6,18 @@
       "api_key": "my-secret-qwen-key",
       "model": "coder-model"
     }
+  },
+  "tools": {
+    "mcpServers": {
+      "lms": {
+        "command": "python",
+        "args": ["-m", "mcp_lms"],
+        "env": {
+          "NANOBOT_LMS_BACKEND_URL": "http://localhost:42002",
+          "NANOBOT_LMS_API_KEY": "my-secret-api-key"
+        }
+      }
+    }
   }
 }
+
