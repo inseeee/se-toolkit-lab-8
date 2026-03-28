@@ -20,3 +20,8 @@ A: The LMS system consists of a FastAPI backend, PostgreSQL database, Caddy reve
 
 **Q: Show me the scores**
 A: Which lab would you like scores for? Available labs: Lab 01, Lab 02, Lab 03, Lab 04, Lab 05, Lab 06, Lab 07, Lab 08.
+## Task 2A — Deployed agent
+
+## Task 2B — Web client
+
+WebSocket endpoint at /ws/chat responds, Flutter placeholder at /flutter available.
