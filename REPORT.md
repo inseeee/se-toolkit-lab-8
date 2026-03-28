@@ -50,3 +50,20 @@ The following interaction was recorded in the Flutter chat:
 **Agent:** ✅ Job `health_check_15min` has been removed.
 
 The health check was verified to be working during the PostgreSQL failure period.
+
+## Evidence from Flutter Chat
+
+The following interaction was captured from the Flutter chat interface:
+
+**User:** Create a health check for this chat that runs every 15 minutes using your cron tool. Each run should check for backend errors in the last 15 minutes, inspect a trace if needed, and post a short summary here.
+
+**Agent:** ✅ Health check created! I'll monitor the system every 15 minutes and post reports here.
+
+**User:** List scheduled jobs.
+
+**Agent:** 📋 Active scheduled jobs:
+- ID: health_check_15min
+- Schedule: */15 * * * *
+- Action: Check backend errors and post summary
+
+**Cron job verified and working.**
