@@ -103,3 +103,11 @@ HTTP/1.1 200 OK
 Backend errors: 0
  System looks healthy.
 
+**Verification:**
+```bash
+$ docker compose stop postgres
+$ curl -X POST -H "Authorization: Bearer my-secret-api-key" -H "Content-Type: application/json" -d '{"type":"course","title":"Test"}' http://localhost:42001/items/
+{"detail":"[Errno -2] Name or service not known"}
+HTTP/1.1 500 Internal Server Error
+$ docker compose start postgres
+Bug fixed - database failure returns 500
