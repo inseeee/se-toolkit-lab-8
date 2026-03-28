@@ -28,6 +28,7 @@ services:
       retries: 5
     networks:
       - lms-network
+
   caddy:
     image: nginx:alpine
     restart: unless-stopped
@@ -35,6 +36,9 @@ services:
       - "42002:80"
     networks:
       - lms-network
+    volumes:
+      - ./nginx-conf/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - flutter-build:/srv/flutter:ro
   nanobot:
     image: alpine
     command: sh -c "echo 'nanobot ready' && tail -f /dev/null"
@@ -43,16 +47,21 @@ services:
       - lms-network
     environment:
       - NANOBOT_ACCESS_KEY=my-access-key
+
   client-web-flutter:
     image: alpine
     command: sh -c "mkdir -p /srv/flutter && echo '<html><body>Flutter app</body></html>' > /srv/flutter/index.html && tail -f /dev/null"
     restart: unless-stopped
     networks:
       - lms-network
+    volumes:
+      - flutter-build:/srv/flutter
+
 networks:
   lms-network:
     name: lms-network
     attachable: true
+
 volumes:
   postgres_data:
-  client-web-flutter:
+  flutter-build:
