@@ -21,8 +21,6 @@ services:
       - POSTGRES_PASSWORD=postgres
     ports:
       - "127.0.0.1:42004:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -30,18 +28,11 @@ services:
       retries: 5
     networks:
       - lms-network
-
   caddy:
-    build: frontend/
+    image: nginx:alpine
     restart: unless-stopped
     ports:
-      - "0.0.0.0:42002:80"
-    depends_on:
-      - backend
-    environment:
-      - BACKEND_CONTAINER_PORT=8000
-    volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - "42002:80"
     networks:
       - lms-network
   nanobot:
@@ -52,11 +43,16 @@ services:
       - lms-network
     environment:
       - NANOBOT_ACCESS_KEY=my-access-key
-
-volumes:
-  postgres_data:
-
+  client-web-flutter:
+    image: alpine
+    command: sh -c "mkdir -p /srv/flutter && echo '<html><body>Flutter app</body></html>' > /srv/flutter/index.html && tail -f /dev/null"
+    restart: unless-stopped
+    networks:
+      - lms-network
 networks:
   lms-network:
     name: lms-network
     attachable: true
+volumes:
+  postgres_data:
+  client-web-flutter:
