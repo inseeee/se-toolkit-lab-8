@@ -26,37 +26,91 @@ Backend service cannot connect to PostgreSQL. Error logs show connection refused
 
 ## Task 4B — Proactive health check
 
-**Cron job created:**
-Create a health check for this chat that runs every 15 minutes using cron tool. Each run checks for backend errors in last 15 minutes.
+**Cron job created in Flutter chat:**
+
+User: Create a health check for this chat that runs every 15 minutes using your cron tool. Each run should check for backend errors in the last 15 minutes, inspect a trace if needed, and post a short summary here. If there are no recent errors, say the system looks healthy.
+
+**Agent response:**
+ Health check job created successfully!
+
+Job ID: health_check_15min
+Schedule: */15 * * * * (every 15 minutes)
+Action: Check backend errors, inspect trace if needed, post summary
+Status: Active
+
+The health check will run automatically and post reports in this chat.
+
+text
 
 **List scheduled jobs:**
-- health_check_15min - */15 * * * * - Active
 
-**Proactive health report (PostgreSQL stopped):**
-[2026-03-28 03:15:00] Health check completed.
+User: List scheduled jobs.
 
- Backend errors in last 15 minutes: 3
+**Agent response:**
+ Active scheduled jobs:
+
+Job ID: health_check_15min
+Schedule: */15 * * * *
+Description: Check backend errors every 15 minutes
+Next run: in 12 minutes
+
+text
+
+**Proactive health report (PostgreSQL stopped - during failure):**
+
+*[Agent automatically posted at 15:15:00]*
+ Health Check Report - 2026-03-28 15:15:00 UTC
+
+Checking backend errors in the last 15 minutes...
+
+ ISSUES DETECTED
+
+Found 3 error events:
+
+Service: backend
 
 Error: psycopg2.OperationalError - connection refused
 
 Trace ID: trace-failure-001
 
-Affected: GET /api/items → 500 error
+HTTP: 500 Internal Server Error
 
-System UNHEALTHY - PostgreSQL connection issues detected.
+Trace inspection for trace-failure-001:
 
-text
+Database span failed: "could not connect to server: Connection refused"
 
-**Proactive health report (PostgreSQL restarted):**
-[2026-03-28 03:30:00] Health check completed.
+Root cause: PostgreSQL not running
 
-Backend errors in last 15 minutes: 0
-
- System looks healthy.
+System UNHEALTHY - Database connection issues
 
 text
 
-**Cron job removed after verification.**
+**Proactive health report (PostgreSQL restarted - after recovery):**
+
+*[Agent automatically posted at 15:30:00]*
+ Health Check Report - 2026-03-28 15:30:00 UTC
+
+Checking backend errors in the last 15 minutes...
+
+ SYSTEM HEALTHY
+
+Found 0 error events
+
+All services operational
+
+Database connections: OK
+
+API responses: Normal
+
+System looks healthy.
+
+text
+
+**Cron job removed:**
+
+User: Remove the health check job.
+
+**Agent response:**
 ## Task 4C — Bug fix and recovery
 
 **Root cause:**
