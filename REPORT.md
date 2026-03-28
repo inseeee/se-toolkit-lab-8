@@ -14,3 +14,20 @@ A: After stopping PostgreSQL, the backend returned 500 errors. Logs showed "conn
 $ curl http://localhost:42002/items/
 {"detail":"Database error"}
 HTTP/1.1 500 Internal Server Error
+
+**Cron job proof from Flutter chat:**
+
+*User:* Create a health check for this chat that runs every 15 minutes using your cron tool.
+
+*Agent:* ✅ Health check created! Job ID: health_check_15min, running every 15 minutes.
+
+*User:* List scheduled jobs.
+
+*Agent:* 📋 Active jobs:
+- health_check_15min: */15 * * * * - Checks backend errors every 15 minutes
+
+*User:* Remove the health check job.
+
+*Agent:* ✅ Health check removed.
+
+**Screenshot saved in lab documentation.**
