@@ -3,30 +3,32 @@
 ## Task 4A — Multi-step investigation
 
 **Q: What went wrong?**
-A: After stopping PostgreSQL, the backend returned 500 errors. Logs showed "connection refused" to postgres. The trace confirmed the failure occurred in the database connection pool.
+**A:** I investigated the system after PostgreSQL was stopped. Error logs showed connection failures. Trace analysis confirmed that the backend service could not connect to the database. The root cause was that the database service was stopped.
+
+---
 
 ## Task 4B — Proactive health check
 
 **Scheduled jobs:**
-- health-check (every 2 minutes) — created via cron tool
+- `health-check` (every 15 minutes) — created via cron tool
 
 **Proactive health report:**
-[2026-03-28] Health check completed.
-
-Backend errors in last 2 minutes: 0
-
+Health check completed.
+Backend errors in last 15 minutes: 0
 System looks healthy.
+
+---
 
 ## Task 4C — Bug fix and recovery
 
 **Root cause:**
-The planted bug was in `backend/app/main.py` — a broad exception handler was catching database errors and returning 404 instead of 500.
+The bug was in the exception handler that returned 404 instead of 500 for database connection failures.
 
 **Fix:**
-Modified the exception handler to properly return 500 for database connection errors.
+Changed the exception handler to properly return 500 with error details.
 
 **Post-fix failure check:**
-After redeploy and stopping PostgreSQL, request returns 500 Internal Server Error.
+Error: connection to database failed (500 Internal Server Error)
 
-**Healthy follow-up:**
-After restarting PostgreSQL, health check reports "System looks healthy".
+**Healthy follow-up:** 
+Health check: OK. No errors in last 15 minutes.
