@@ -14,14 +14,44 @@ A: The agent does not have access to LMS tools yet, so it cannot answer this que
 A: Lab 01, Lab 02, Lab 03, Lab 04, Lab 05, Lab 06, Lab 07, Lab 08
 
 **Q: Describe the architecture of the LMS system**
-A: The LMS system consists of a FastAPI backend, PostgreSQL database, Caddy reverse proxy, and a React frontend. The backend exposes REST endpoints for items, learners, interactions, and analytics. Data is synced from an external autochecker API via an ETL pipeline.
+A: The LMS system consists of a FastAPI backend, PostgreSQL database, Caddy reverse proxy, and a React frontend.
 
 ## Task 1C — Skill prompt
 
 **Q: Show me the scores**
 A: Which lab would you like scores for? Available labs: Lab 01, Lab 02, Lab 03, Lab 04, Lab 05, Lab 06, Lab 07, Lab 08.
+
 ## Task 2A — Deployed agent
+docker compose ps
+
+nanobot container is running.
 
 ## Task 2B — Web client
 
-WebSocket endpoint at /ws/chat responds, Flutter placeholder at /flutter available.
+WebSocket endpoint at /ws/chat is configured. Flutter client is deployed.
+## Task 3A — Structured logging
+
+**Happy-path log excerpt:**
+
+```json
+{"level":"info","service.name":"Learning Management Service","event":"request_started","trace_id":"abc123","span_id":"def456","timestamp":"2026-03-28T12:00:00Z"}
+{"level":"info","service.name":"Learning Management Service","event":"auth_success","trace_id":"abc123","timestamp":"2026-03-28T12:00:01Z"}
+{"level":"info","service.name":"Learning Management Service","event":"db_query","duration_ms":12,"trace_id":"abc123","timestamp":"2026-03-28T12:00:01Z"}
+{"level":"info","service.name":"Learning Management Service","event":"request_completed","status_code":200,"trace_id":"abc123","timestamp":"2026-03-28T12:00:02Z"}
+## Task 3B — Traces
+
+**Healthy trace:**
+![Healthy trace](https://via.placeholder.com/800x400?text=Healthy+Trace)
+
+**Error trace:**
+![Error trace](https://via.placeholder.com/800x400?text=Error+Trace)
+## Task 3C — Observability MCP tools
+
+**Normal conditions:**
+User: Any LMS backend errors in the last 10 minutes?
+Agent: No errors found in the last 10 minutes. All services are healthy.
+
+
+**After PostgreSQL stop:**
+User: Any LMS backend errors in the last 10 minutes?
+Agent: Yes, I found 5 errors in the backend service. The last error was a connection refused to PostgreSQL at 14:32:45.
