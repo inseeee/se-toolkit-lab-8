@@ -1,0 +1,10 @@
+{
+  "providers": {
+    "custom": {
+      "type": "openai",
+      "base_url": "http://localhost:42005/v1",
+      "api_key": "my-secret-qwen-key",
+      "model": "coder-model"
+    }
+  }
+}
