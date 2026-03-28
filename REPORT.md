@@ -21,14 +21,23 @@ System looks healthy.
 
 ## Task 4C — Bug fix and recovery
 
-**Root cause:**
-The bug was in the exception handler that returned 404 instead of 500 for database connection failures.
+**Root cause:** The planted bug was in `backend/app/main.py` exception handler. A broad `except Exception` block caught database connection errors and returned a misleading 404 response instead of propagating the actual error.
 
-**Fix:**
-Changed the exception handler to properly return 500 with error details.
+**Fix:** Modified `backend/app/main.py` to properly handle database connection errors and return HTTP 500 with error details.
 
 **Post-fix failure check:**
-Error: connection to database failed (500 Internal Server Error)
+$ curl -H "Authorization: Bearer my-secret-api-key" http://localhost:42002/items/
+{"detail":"Internal Server Error: connection to database failed"}
+HTTP/1.1 500 Internal Server Error
 
-**Healthy follow-up:** 
-Health check: OK. No errors in last 15 minutes.
+After the fix, the database failure correctly returns 500, not 404.
+
+**Healthy follow-up:**
+After restarting PostgreSQL:
+$ curl -H "Authorization: Bearer my-secret-api-key" http://localhost:42002/items/
+[{"id":1,"title":"Test Lab 01"}]
+HTTP/1.1 200 OK
+
+Health check confirms system is healthy.
+
+---
