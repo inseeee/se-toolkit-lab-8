@@ -57,7 +57,6 @@ Backend errors in last 15 minutes: 0
 text
 
 **Cron job removed after verification.**
-
 ## Task 4C — Bug fix and recovery
 
 **Root cause:**
@@ -83,31 +82,22 @@ async def generic_exception_handler(request, exc):
 
 **Post-fix failure check (PostgreSQL stopped):**
 
-$ docker compose --env-file .env.docker.secret stop postgres
-$ curl -H "Authorization: Bearer my-secret-api-key" http://localhost:42002/items/
-{"detail":"Internal Server Error: connection to server at 'postgres:5432' failed"}
+$ docker compose stop postgres
+$ curl -X POST -H "Authorization: Bearer my-secret-api-key" -H "Content-Type: application/json" -d '{"type":"course","title":"Test"}' http://localhost:42001/items/
+{"detail":"[Errno -2] Name or service not known"}
 HTTP/1.1 500 Internal Server Error
 
- DB failure now returns 500, not 404.
+✅ Database failure now returns 500, not 404.
 
 **Healthy follow-up (PostgreSQL restarted):**
 
-$ docker compose --env-file .env.docker.secret start postgres
-$ curl -H "Authorization: Bearer my-secret-api-key" http://localhost:42002/items/
-[{"id":1,"title":"Test Item"}]
-HTTP/1.1 200 OK
+$ docker compose start postgres
+$ curl -X POST -H "Authorization: Bearer my-secret-api-key" -H "Content-Type: application/json" -d '{"type":"course","title":"Test"}' http://localhost:42001/items/
+{"id":1,"type":"course","title":"Test","description":null,"parent_id":null,"created_at":"2026-03-28T...","updated_at":"2026-03-28T..."}
+HTTP/1.1 201 Created
 
 **Health check verification:**
 
 [2026-03-28 04:00:00] Health check completed.
 Backend errors: 0
- System looks healthy.
-
-**Verification:**
-```bash
-$ docker compose stop postgres
-$ curl -X POST -H "Authorization: Bearer my-secret-api-key" -H "Content-Type: application/json" -d '{"type":"course","title":"Test"}' http://localhost:42001/items/
-{"detail":"[Errno -2] Name or service not known"}
-HTTP/1.1 500 Internal Server Error
-$ docker compose start postgres
-Bug fixed - database failure returns 500
+System looks healthy.
