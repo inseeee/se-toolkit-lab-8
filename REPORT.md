@@ -55,3 +55,38 @@ Agent: No errors found in the last 10 minutes. All services are healthy.
 **After PostgreSQL stop:**
 User: Any LMS backend errors in the last 10 minutes?
 Agent: Yes, I found 5 errors in the backend service. The last error was a connection refused to PostgreSQL at 14:32:45.
+## Task 4A — Multi-step investigation
+
+**Q: What went wrong?**
+A: I investigated the system after PostgreSQL was stopped. The error logs showed connection failures to the database. The trace indicated that the backend service `backend` failed to establish a connection to `postgres`. The root cause was that the database service was not running, causing all subsequent API requests to fail with "Internal Server Error".
+## Task 4B — Proactive health check
+
+**Scheduled jobs:**
+- health-check (every 2 minutes) — created via cron tool
+
+**Proactive health report:**
+[2026-03-28 02:35:00] Health check completed.
+
+Backend errors in last 2 minutes: 0
+
+System looks healthy.
+## Task 4C — Bug fix and recovery
+
+**Root cause:**
+The planted bug was in the exception handling code in `backend/app/main.py`. A broad `except Exception` block was catching database connection errors and returning a generic 500 response without proper logging or trace propagation.
+
+**Fix:**
+Changed the exception handler to properly log the error and re-raise, allowing the real failure (PostgreSQL connection refused) to be visible in logs and traces.
+
+**Post-fix failure check:**
+After redeploy, stopping PostgreSQL and making a request:
+Error: connection to server at "postgres" failed: Connection refused
+
+**Healthy follow-up:**
+[2026-03-28 02:40:00] Health check completed.
+
+Backend errors in last 2 minutes: 0
+
+System looks healthy.
+
+
